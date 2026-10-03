@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SYSTEM — Daily Quest Dashboard</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ============ OPENING SCREEN (يظهر في كل تحميل للصفحة) ============ -->
+    <div id="intro" class="intro">
+        <div class="intro-scan"></div>
+        <div class="intro-content">
+            <p class="intro-line" data-step="1">SYSTEM INITIALIZING...</p>
+            <p class="intro-line intro-big" data-step="2">WELCOME, PLAYER</p>
+            <p class="intro-line intro-sub" data-step="3">DAILY QUEST SYSTEM</p>
+            <div class="intro-bar"><span></span></div>
+        </div>
+        <button id="intro-skip" class="intro-skip" type="button">SKIP ▸</button>
+    </div>
+
+    <!-- ============ APP ============ -->
+    <div class="app" id="app">
+
+        <header class="topbar panel">
+            <div class="brand">
+                <span class="brand-mark">◈</span>
+                <div>
+                    <h1>SYSTEM</h1>
+                    <small>PLAYER INTERFACE</small>
+                </div>
+            </div>
+
+            <div class="clock">
+                <div id="clock-date" class="clock-date">—</div>
+                <div id="clock-time" class="clock-time">--:--:--</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">PLAYER LEVEL</span>
+                    <span class="stat-value glow" id="player-level">Lv. 1</span>
+                </div>
+                <div class="stat stat-xp">
+                    <span class="stat-label">XP</span>
+                    <span class="stat-value" id="xp-text">0 / 100</span>
+                    <div class="bar">
+                        <div class="bar-fill" id="xp-fill"></div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">DAY STREAK</span>
+                    <span class="stat-value streak" id="streak-value">0 DAYS</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="tabs" aria-label="Main navigation">
+            <button class="tab active" type="button" data-view="dashboard">DASHBOARD</button>
+            <button class="tab" type="button" data-view="history">HISTORY</button>
+            <button class="tab" type="button" data-view="settings">SETTINGS</button>
+        </nav>
+
+        <main>
+            <!-- DASHBOARD -->
+            <section id="view-dashboard" class="view active">
+                <div class="dash-grid">
+
+                    <section class="panel quests">
+                        <div class="panel-head">
+                            <h2 class="panel-title">DAILY QUESTS</h2>
+                            <button id="btn-add-quest" class="btn btn-primary" type="button">+ ADD QUEST</button>
+                        </div>
+                        <ul id="task-list" class="task-list"></ul>
+                        <p id="task-empty" class="empty">NO ACTIVE QUESTS.<br>Press “ADD QUEST” to begin.</p>
+                    </section>
+
+                    <aside class="side">
+                        <section class="panel progress-panel">
+                            <h2 class="panel-title">DAILY PROGRESS</h2>
+                            <div class="ring-wrap">
+                                <svg class="ring" viewBox="0 0 140 140" aria-hidden="true">
+                                    <defs>
+                                        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                                            <stop offset="0" stop-color="#22e5ff" />
+                                            <stop offset="1" stop-color="#8a4dff" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-bg" cx="70" cy="70" r="60" />
+                                    <circle id="ring-fill" class="ring-fill" cx="70" cy="70" r="60"
+                                        transform="rotate(-90 70 70)" />
+                                </svg>
+                                <div class="ring-text">
+                                    <span id="progress-percent">0%</span>
+                                    <small>COMPLETE</small>
+                                </div>
+                            </div>
+                            <div class="quests-count">
+                                <span>QUESTS COMPLETED</span>
+                                <strong id="quests-count">0 / 0</strong>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <h2 class="panel-title">TIME REMAINING</h2>
+                            <div id="countdown" class="countdown">--:--:--</div>
+                            <div class="bar">
+                                <div class="bar-fill bar-purple" id="day-bar-fill"></div>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <h2 class="panel-title">REWARDS</h2>
+                            <ul id="reward-list" class="reward-list"></ul>
+                        </section>
+
+                        <section class="panel">
+                            <h2 class="panel-title">SYSTEM CHALLENGE</h2>
+                            <div id="challenge-box"></div>
+                        </section>
+                    </aside>
+
+                </div>
+            </section>
+
+            <!-- HISTORY -->
+            <section id="view-history" class="view">
+                <section class="panel">
+                    <h2 class="panel-title">HISTORY</h2>
+                    <ul id="history-list" class="history-list"></ul>
+                    <p id="history-empty" class="empty">NO RECORDS YET.<br>Finished days will appear here.</p>
+                </section>
+            </section>
+
+            <!-- SETTINGS -->
+            <section id="view-settings" class="view">
+                <section class="panel settings">
+                    <h2 class="panel-title">SETTINGS</h2>
+
+                    <div class="setting-row">
+                        <div>
+                            <strong>Sound</strong>
+                            <small>System sound effects: <span id="sound-state">ON</span></small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="sound-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <strong>Reset Current Day</strong>
+                            <small>Uncheck all quests and revert today’s XP</small>
+                        </div>
+                        <button id="btn-reset-day" class="btn btn-ghost" type="button">RESET DAY</button>
+                    </div>
+
+                    <div class="setting-row">
+                        <div>
+                            <strong>Clear All Data</strong>
+                            <small>Deletes player, quests and the entire history</small>
+                        </div>
+                        <button id="btn-clear-all" class="btn btn-danger" type="button">CLEAR ALL DATA</button>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- ============ MODALS ============ -->
+    <div id="modal-add" class="modal" aria-hidden="true">
+        <div class="modal-box">
+            <h3 class="modal-title">NEW QUEST</h3>
+            <form id="add-form" autocomplete="off">
+                <label for="task-name" class="field-label">TASK NAME</label>
+                <input id="task-name" class="input" type="text" maxlength="60" placeholder="e.g. Study JavaScript"
+                    required>
+
+                <span class="field-label">DIFFICULTY</span>
+                <div id="difficulty-options" class="seg"></div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+                    <button type="submit" class="btn btn-primary">CREATE QUEST</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-system" class="modal modal-system" aria-hidden="true">
+        <div class="modal-box system-box">
+            <p class="sys-label">SYSTEM MESSAGE</p>
+            <h3 id="sys-title" class="sys-title"></h3>
+            <p id="sys-sub" class="sys-sub"></p>
+            <p id="sys-name" class="sys-name"></p>
+            <p id="sys-body" class="sys-body"></p>
+            <button id="sys-ok" class="btn btn-primary" type="button">ACKNOWLEDGE</button>
+        </div>
+    </div>
+
+    <div id="modal-confirm" class="modal modal-system" data-type="penalty" aria-hidden="true">
+        <div class="modal-box system-box">
+            <p class="sys-label">WARNING</p>
+            <h3 id="confirm-title" class="sys-title"></h3>
+            <p id="confirm-text" class="sys-body"></p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+                <button type="button" id="confirm-ok" class="btn btn-danger">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-history" class="modal" aria-hidden="true">
+        <div class="modal-box modal-wide">
+            <div id="history-detail"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" data-close>CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
